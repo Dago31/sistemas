@@ -1,2 +1,2 @@
-# sistemas
-tarea sistemas op
+# Sistemas Operativos
+  - Problema de los fumadores : prog_so.py
