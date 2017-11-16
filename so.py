@@ -93,7 +93,7 @@ class Fumador(object):
 		self.creado = False
 
 	def Crear(self):
-		while(!self.creado):
+		while !self.creado :
 			pass
 		new = Fumar(self.tipo,tipes)
 		tipes+=1
@@ -116,7 +116,7 @@ while True :
 		cnt+=1
 		mesa.ingredientes[random.choice(ingredientes)]
 		mesa.ingredientes[random.choice(ingredientes)]
-		
+
 		if thread1.Creado() == False:
 			thread1.Crear()
 
