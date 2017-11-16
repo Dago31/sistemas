@@ -2,7 +2,7 @@
   - Problema de los fumadores : prog_so.py
 # Sistemas Ejercicios 2
 
--Ejercicio1
+###Ejercicio1
 
 	1.- 0.5904
 	2.- 0.96875
@@ -10,7 +10,7 @@
 	4.- 0,999999999999999999999999999999999999999999999999999999999999
 	5.- 0.271
 	
--Ejercicio2
+###Ejercicio2
 
 	-A
 		- Por FCFS : ( 12*5 + 2*4 + 3*3 + 4*2 + 20*1 )/5 = 21
