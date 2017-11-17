@@ -1,9 +1,10 @@
-import threading
+from threading import Condition , Lock , Thread
 import datetime
-
+import random
+import time
 class Mesa(object):
 	"""docstring for mesa"""
-	def __init__(self, ingredientes):
+	def __init__(self):
 		#super mesa, self.__init__()
 		self.ingredientes = {"cerillos":0,"papel":0,"tabaco":0}
 		self.ocupado = False
@@ -11,39 +12,39 @@ class Mesa(object):
 	def agregar_papel(self):
 		if ocupado:
 			return -1
-		else
+		else:
 			ingredientes["papel"]+=1
 
 	def agregar_cerillos(self):
 		if ocupado:
 			return -1
-		else
+		else:
 			ingredientes["cerillos"]+=1
 
 	def agregar_tabaco(self):
 		if ocupado:
 			return -1
-		else
+		else:
 			ingredientes["tabaco"]+=1
 
 
 	def sacar_cerillos(self):
-		if self.cosas["cerillos"]>0:
-			self.self.cosas["cerillos"]-=1
+		if self.ingredientes["cerillos"]>0:
+			self.ingredientes["cerillos"]-=1
 		else:
 			print("no podi sacar cerillos, aweonao")
 			return -1
 
 	def sacar_papel(self):
-		if self.cosas["papel"]>0:
-			self.self.cosas["papel"]-=1
+		if self.ingredientes["papel"]>0:
+			self.ingredientes["papel"]-=1
 		else:
 			print("no podi sacar papel, aweonao")
 			return -1
 
 	def sacar_tabaco(self):
-		if self.cosas["tabaco"]>0:
-			self.self.cosas["tabaco"]-=1
+		if self.ingredientes["tabaco"]>0:
+			self.ingredientes["tabaco"]-=1
 		else:
 			print("no podi sacar tabaco, aweonao")
 			return -1
@@ -53,38 +54,44 @@ class Mesa(object):
 class Fumar(Thread):
 	"""docstring for Fumador"""
 
-	def __init__(self,tipo,numId): #Inicialización
-		Thread.__init__(self,tipo,numId)
+	def __init__(self,tipo,numId): #Inicializacion
+		Thread.__init__(self)
 		self.cv = Condition()
 		self.numId = numId
 		self.tipo = tipo
 
-	def fumar(self,mesa):#Zona critica
-		print("Fumador ",self.numId , " de tipo :" , self.tipo , "está fumando")
-		self.cv.release() #Thread Terminó
-
-	def poder_fumar(self):
-		check = True
-		for elem in mesa.ingredientes:
-			if elem[1] != self.tipo and elem[1] == 0:
-				check=False
-		return check
+	def fumar(self):#Zona critica
+		print("Fumador ",self.numId , " de tipo :" , self.tipo , "termina de fumar")
+		self.cv.release() #Thread Termino
+		mesa.ocupado=False
 
 	def run(self):
+		#print("corriendo Thread :",self.numId,"con tipo :",self.tipo)
 		check=False
-		while(!check and mesa.ocupado):
-			check=self.poder_fumar()
+		while not check:
+			check=poder_fumar(self.tipo,mesa)
 		self.cv.acquire() # Puede fumar
 		mesa.ocupado = True
-		for elem in mesa.ingredientes:
-			if elem[1] != self.tipo and elem[1]>0:
-				if elem[1] == "cerillos":
+		for elem1,elem2 in mesa.ingredientes.items():
+			if elem1 != self.tipo and elem2>0:
+				if elem1 == "cerillos":
 					mesa.sacar_cerillos()
-				if elem[1] == "tabaco":
+				if elem1 == "tabaco":
 					mesa.sacar_tabaco()
-				if elem[1] == "papel":
+				if elem1 == "papel":
 					mesa.sacar_papel()
 		time.sleep(random.randrange(1,6,1))
+		Fumar.fumar(self)
+
+def poder_fumar(tipo,mesa):
+	check = True
+	if mesa.ocupado == True:
+		return False
+	for elem1,elem2 in mesa.ingredientes.items():
+		if elem1 != tipo and elem2 == 0:
+			check=False
+	return check
+
 
 class Fumador(object):
 	def __init__(self,tipo,numId2):
@@ -92,17 +99,20 @@ class Fumador(object):
 		self.numId2 = numId2
 		self.creado = False
 
-	def Crear(self):
-		while !self.creado :
+	def Crear(self,tipes):
+		while self.creado == True:
 			pass
-		new = Fumar(self.tipo,tipes)
+		self.creado = True
+		nuevoThread = Fumar(self.tipo,tipes)
 		tipes+=1
-		new.start()
+		nuevoThread.start()
+		print("Creando thread desde Fumador Nro : ",self.numId2,"Thread id :",tipes , " Con tipo :" , self.tipo)
+
 
 	def Creado(self):
 		return self.creado
 
-print("Ingrese cuantas veces la mesa presentará objetos")
+print("Ingrese cuantas veces la mesa presentara objetos")
 n = int(input())
 mesa = Mesa()
 cnt = 0
@@ -111,17 +121,21 @@ ingredientes = ["cerillos","tabaco","papel"]
 thread1 = Fumador("cerillos",1)
 thread2 = Fumador("tabaco",2)
 thread3 = Fumador("papel",3)
-while True :
-	if !mesa.ocupado:
+while cnt < n :
+
+	if not mesa.ocupado:
 		cnt+=1
-		mesa.ingredientes[random.choice(ingredientes)]
-		mesa.ingredientes[random.choice(ingredientes)]
+		mesa.ingredientes[random.choice(ingredientes)]+=1
+		mesa.ingredientes[random.choice(ingredientes)]+=1
+		print("Ingredientes agregados en la mesa",mesa.ingredientes)
+		if thread1.Creado() == False and poder_fumar(thread1.tipo,mesa):
+			thread1.Crear(tipes)
+			tipes+=1
 
-		if thread1.Creado() == False:
-			thread1.Crear()
+		if thread2.Creado() == False and poder_fumar(thread2.tipo,mesa):
+			thread2.Crear(tipes)
+			tipes+=1
 
-		if thread2.Creado() == False:
-			thread2.Crear()
-
-		if thread3.Creado() == False:
-			thread3.Crear()
+		if thread3.Creado() == False and poder_fumar(thread3.tipo,mesa):
+			thread3.Crear(tipes)
+			tipes+=1
