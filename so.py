@@ -113,29 +113,30 @@ class Fumador(object):#objeto fumador
 		return self.creado
 
 print("Ingrese cuantas veces la mesa presentara objetos")
-n = int(input())#cuantos ingredientes se añadiran a la mesa
+n = int(input())#cuantos ingredientes se anadiran a la mesa
+#n=2
 mesa = Mesa()#crea la mesa
 cnt = 0#contador para revisar iteraciones
-tipes = 1
+num_thread = 1
 ingredientes = ["cerillos","tabaco","papel"]#crea los ingredientes
-thread1 = Fumador("cerillos",1)#inicializa los Thread
-thread2 = Fumador("tabaco",2)
-thread3 = Fumador("papel",3)
+Fumador_cerillos = Fumador("cerillos",1)#inicializa los Thread
+Fumador_tabaco = Fumador("tabaco",2)
+Fumador_papel = Fumador("papel",3)
 while cnt < n :
-
 	if not mesa.ocupado:#mientras la mesa no este ocupada
 		cnt+=1
 		mesa.ingredientes[random.choice(ingredientes)]+=1#ingresa 2 ingredientes al azar
 		mesa.ingredientes[random.choice(ingredientes)]+=1
 		print("Ingredientes agregados en la mesa",mesa.ingredientes)
-		if thread1.Creado() == False and poder_fumar(thread1.tipo,mesa):
-			thread1.Crear(tipes)
-			tipes+=1
+		while poder_fumar(Fumador_cerillos.tipo,mesa) or poder_fumar(Fumador_tabaco.tipo,mesa) or poder_fumar(Fumador_papel.tipo,mesa) :
+			if Fumador_cerillos.Creado() == False and poder_fumar(Fumador_cerillos.tipo,mesa):
+				Fumador_cerillos.Crear(num_thread)
+				num_thread+=1
 
-		if thread2.Creado() == False and poder_fumar(thread2.tipo,mesa):
-			thread2.Crear(tipes)
-			tipes+=1
+			if Fumador_tabaco.Creado() == False and poder_fumar(Fumador_tabaco.tipo,mesa):
+				Fumador_tabaco.Crear(num_thread)
+				num_thread+=1
 
-		if thread3.Creado() == False and poder_fumar(thread3.tipo,mesa):
-			thread3.Crear(tipes)
-			tipes+=1
+			if Fumador_papel.Creado() == False and poder_fumar(Fumador_papel.tipo,mesa):
+				Fumador_papel.Crear(num_thread)
+				num_thread+=1
