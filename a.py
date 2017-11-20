@@ -63,7 +63,7 @@ class Fumar(Thread):#Thread para controlar cuando fumar
 	def fumar(self):#Zona critica
 		self.cv.release() #Thread Termino
 		mesa.ocupado=False
-		print("Fumador ",self.numId , " de tipo :" , self.tipo , "termina de fumar")
+		print("El thread nro:",self.numId , " de tipo :" , self.tipo , "ha terminado de fumar")
 
 	def run(self):#revisa en cada instante si puede fumar
 		#print("corriendo Thread :",self.numId,"con tipo :",self.tipo)
@@ -106,7 +106,7 @@ class Fumador(object):#objeto fumador
 		nuevoThread = Fumar(self.tipo,tipes)#inicializa el Thread fumar
 		tipes+=1#le suma uno id
 		nuevoThread.start()#comienza el Thread
-		print("Creando thread desde Fumador Nro : ",self.numId2,"Thread id :",tipes , " Con tipo :" , self.tipo)
+		print("Creando thread desde Fumador de",self.tipo,"Thread id :",tipes)
 
 
 	def Creado(self):#retorna si esta creado o no
@@ -125,14 +125,16 @@ Fumador_tabaco = Fumador("tabaco",2)
 Fumador_papel = Fumador("papel",3)
 while cnt < n :
 	if not mesa.ocupado:#mientras la mesa no este ocupada
-		print("entra el if")
+		print("Disponible para retirar ingredientes")
 		cnt += 1
 		mesa.ingredientes[random.choice(ingredientes)]+=1#ingresa 2 ingredientes al azar
 		mesa.ingredientes[random.choice(ingredientes)]+=1
 		print("Ingredientes agregados en la mesa",mesa.ingredientes)
 		while poder_fumar(Fumador_cerillos.tipo,mesa) or poder_fumar(Fumador_tabaco.tipo,mesa) or poder_fumar(Fumador_papel.tipo,mesa)  :
-			print("entra 2do while")
+			#print("entra 2do while")
 			#time.sleep(random.randrange(1,6,1))
+			
+
 			if  poder_fumar(Fumador_cerillos.tipo,mesa):
 				Fumador_cerillos.Crear(num_thread)
 				num_thread+=1
@@ -146,7 +148,7 @@ while cnt < n :
 				num_thread+=1
 			time.sleep(random.randrange(3,6,1))
 
-		print ("sale del segundo ")
+		#print ("sale del segundo ")
 	
 
 
