@@ -5,9 +5,9 @@ import time
 
 class TableRoom():
 
-    def __init__(self):
+    def __init__(self,cant1,cant2,cant3):
         self.TableBusy = False
-        self.ingredientes = {"tabaco":0, "papel":0, "cerillos":0}
+        self.ingredientes = {"tabaco":cant1, "papel":cant2, "cerillos":cant3}
         self.TableLock = Lock() # Agregar condiciones de ingredientes
         self.TableAvailable = Condition(self.TableLock)
 
@@ -20,7 +20,6 @@ class TableRoom():
 
     def WaitForSignal(self,tipo):
         with self.TableLock:   # Si esta requerido el monitor
-            #print("TableBusy :", self.TableBusy , "CanIsmoke : ", self.CanIsmoke(tipo))
             while self.TableBusy: # Verifica si necesita esperar
                 self.TableAvailable.wait() # Espera hasta que alguien notifique que se dejo de usar
             time.sleep(random.randint(1,6))
@@ -52,7 +51,7 @@ class Smoker():
         pr.DoneWithSmoke(self.tipo)
         # Termina de ocupar la impresora
 
-pr = TableRoom()
+pr = TableRoom(0,0,0)
 ListOfSmokers = []
 ListOfSmokers.append(Smoker("tabaco"))
 ListOfSmokers.append(Smoker("papel"))
