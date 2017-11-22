@@ -51,12 +51,10 @@ class Smoker():
         # Termina de ocupar la impresora
 
 pr = TableRoom()
-number_students = int(input("Ingrese numero de estudiantes\n"))
 ListOfSmokers = []
 ListOfSmokers.append(Smoker("tabaco"))
 ListOfSmokers.append(Smoker("papel"))
 ListOfSmokers.append(Smoker("cerillos"))
-
 number_repeats = int(input("Ingrese cantidad de repeticiones\n"))
 for i in range(0,number_repeats):
     pos = random.randint(0,2)
