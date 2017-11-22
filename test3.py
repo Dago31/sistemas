@@ -20,7 +20,7 @@ class TableRoom():
 
     def WaitForSignal(self,tipo):
         with self.TableLock:   # Si esta requerido el monitor
-            print("TableBusy :", self.TableBusy , "CanIsmoke : ", self.CanIsmoke(tipo))
+            #print("TableBusy :", self.TableBusy , "CanIsmoke : ", self.CanIsmoke(tipo))
             while self.TableBusy: # Verifica si necesita esperar
                 self.TableAvailable.wait() # Espera hasta que alguien notifique que se dejo de usar
             time.sleep(random.randint(1,6))
@@ -33,6 +33,9 @@ class TableRoom():
             print("Fuma el tipo :", tipo)
             with self.TableLock:
                 self.TableBusy = False
+                for elem1,elem2 in self.ingredientes.items():#recorre los ingredientes de la mesa
+                    if elem1 != tipo and elem2>0 :#resta cantidad de ingredientes que saco a la mesa
+                        self.ingredientes[elem1]-=1
                 self.TableAvailable.notify()
         else:
             print("No fuma  el tipo :", tipo)
@@ -46,7 +49,6 @@ class Smoker():
         print("Fumador con nombre :", self.tipo ,"requiere fumar")
         pr.WaitForSignal(self.tipo)
         # Ocupa la impresora
-        #print("Fumador con nombre :", self.tipo ,"termina de fumar")
         pr.DoneWithSmoke(self.tipo)
         # Termina de ocupar la impresora
 
@@ -55,7 +57,15 @@ ListOfSmokers = []
 ListOfSmokers.append(Smoker("tabaco"))
 ListOfSmokers.append(Smoker("papel"))
 ListOfSmokers.append(Smoker("cerillos"))
+ingredientes = ["tabaco","papel","cerillos"]
 number_repeats = int(input("Ingrese cantidad de repeticiones\n"))
-for i in range(0,number_repeats):
-    pos = random.randint(0,2)
-    ListOfSmokers[pos].Smoke()
+cnt = 0
+while cnt < number_repeats:
+    if pr.TableBusy == False:
+        cnt+=1
+        pr.ingredientes[random.choice(ingredientes)]+= 1 # Ingresa 2 ingredientes al azar
+        pr.ingredientes[random.choice(ingredientes)]+= 1
+        while pr.CanIsmoke("tabaco") or pr.CanIsmoke("papel") or pr.CanIsmoke("cerillos"):
+            print("Actual :" , pr.ingredientes)
+            pos = random.randint(0,2)
+            ListOfSmokers[pos].Smoke()
